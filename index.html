@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Печатная форма · МЧС МВД</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #eef1f7;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 20px 40px;
+    }
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+      padding: 28px 32px 36px;
+      border: 1px solid #d4dce8;
+    }
+    /* Шапка строгая, без лишних слов */
+    .doc-header {
+      border-bottom: 2px solid #1f2a44;
+      padding-bottom: 14px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+    }
+    .doc-header .title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: #0b1e3a;
+      text-transform: uppercase;
+    }
+    .doc-header .sub {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #1f2a44;
+      background: #f0f4fc;
+      padding: 4px 18px;
+      border-radius: 30px;
+      border: 1px solid #ccd6e6;
+    }
+    /* Поля формы */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px 32px;
+      margin: 12px 0 18px;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .field-group label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #1f2a44;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+    .field-group input {
+      padding: 12px 14px;
+      border: 1.5px solid #d0d8e6;
+      border-radius: 10px;
+      font-size: 1rem;
+      background: white;
+      transition: 0.15s;
+      width: 100%;
+      font-family: inherit;
+    }
+    .field-group input:focus {
+      border-color: #1f3a7a;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(28, 55, 130, 0.10);
+    }
+    /* Блок управления копиями */
+    .copy-control {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      background: #f4f7fd;
+      padding: 12px 24px;
+      border-radius: 40px;
+      margin: 20px 0 16px;
+      border: 1px solid #d7e0ed;
+    }
+    .copy-control label {
+      font-weight: 600;
+      color: #1d2c4b;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .copy-control select {
+      padding: 8px 18px;
+      border-radius: 30px;
+      border: 1.5px solid #bcc6db;
+      background: white;
+      font-weight: 500;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px 20px;
+      margin-top: 16px;
+    }
+    .btn {
+      border: none;
+      background: white;
+      padding: 12px 30px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #1f2a44;
+      border: 1px solid #c8d2e4;
+      cursor: pointer;
+      transition: 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fafcff;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: #0b1e3a;
+      border: 1px solid #0b1e3a;
+      color: white;
+      box-shadow: 0 6px 14px rgba(11, 30, 58, 0.18);
+    }
+    .btn-primary:hover {
+      background: #1d3460;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid #2f4670;
+      color: #1f2a44;
+    }
+    .btn-outline:hover {
+      background: #eef3ff;
+    }
+    .btn-success {
+      background: #1d6b3a;
+      border: 1px solid #1d6b3a;
+      color: white;
+    }
+    .btn-success:hover {
+      background: #155a2f;
+    }
+    /* Зона печати — строгие карточки без лишних надписей */
+    .print-area {
+      display: none;
+      margin-top: 30px;
+      padding: 12px;
+      background: #f8faff;
+      border-radius: 18px;
+      border: 1px solid #d7e0ed;
+    }
+    .card-print {
+      display: none;
+      background: white;
+      border: 1.5px solid #1f2a44;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 18px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    /* Шапка внутри карточки — только учреждение */
+    .card-print .header-print {
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.2px;
+      border-bottom: 2px solid #1f2a44;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      text-align: center;
+      text-transform: uppercase;
+      color: #0b1e3a;
+    }
+    .card-print .row-print {
+      display: flex;
+      padding: 5px 0;
+      border-bottom: 1px dashed #d3dbea;
+    }
+    .card-print .row-print .label-print {
+      width: 130px;
+      font-weight: 600;
+      color: #0b1e3a;
+      font-size: 0.9rem;
+    }
+    .card-print .row-print .value-print {
+      flex: 1;
+      padding-left: 14px;
+      font-size: 0.95rem;
+      word-break: break-word;
+    }
+    /* Нижний колонтитул полностью убран — ничего не добавляем */
+    .card-print .footer-print {
+      display: none;
+    }
+    /* Стили для печати */
+    @media print {
+      body { background: white; padding: 0.2in; margin: 0; }
+      .container { box-shadow: none; padding: 8px; border-radius: 0; border: none; }
+      .no-print { display: none !important; }
+      .print-area { display: block !important; border: none; background: white; padding: 0; }
+      .card-print {
+        display: block !important;
+        page-break-inside: avoid;
+        border: 1.5px solid #1f2a44;
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin-bottom: 16px;
+        max-width: 100%;
+        box-shadow: none;
+      }
+      .card-print .header-print { border-bottom-width: 2px; }
+      .card-print .row-print { border-bottom: 1px dashed #bcc6db; }
+      .card-print .footer-print { display: none; }
+    }
+    .text-muted { color: #4a5f82; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+<div class="container" id="appContainer">
+  <!-- ШАПКА БЕЗ СЛОВ "ВКЛАДЫШ", "СТЕГАНКА", БЕЗ СМАЙЛИКОВ -->
+  <div class="doc-header">
+    <span class="title">Печатная форма</span>
+    <span class="sub">КГ ФКУЗ "МЧС МВД России по г. Москве"</span>
+  </div>
+
+  <!-- ПОЛЯ ДЛЯ ЗАПОЛНЕНИЯ -->
+  <div class="no-print">
+    <div class="form-grid">
+      <div class="field-group">
+        <label>Наименование</label>
+        <input type="text" id="medName" value="Анальгин 500 мг">
+      </div>
+      <div class="field-group">
+        <label>Форма выпуска</label>
+        <input type="text" id="dosageForm" value="Таблетки">
+      </div>
+      <div class="field-group">
+        <label>Дозировка</label>
+        <input type="text" id="dosage" value="500 мг">
+      </div>
+      <div class="field-group">
+        <label>Номер серии</label>
+        <input type="text" id="batchNumber" value="A123-09">
+      </div>
+      <div class="field-group">
+        <label>Срок годности</label>
+        <input type="text" id="expiryDate" value="12.2027">
+      </div>
+      <div class="field-group">
+        <label>Производитель</label>
+        <input type="text" id="manufacturer" value="Фармстандарт">
+      </div>
+    </div>
+
+    <!-- ВЫБОР КОЛИЧЕСТВА КОПИЙ -->
+    <div class="copy-control">
+      <label>Количество копий на листе:
+        <select id="copiesPerSheet">
+          <option value="1">1</option>
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="6">6</option>
+        </select>
+      </label>
+      <span class="text-muted" style="margin-left: auto;">печать / вкладыш</span>
+    </div>
+
+    <!-- КНОПКИ -->
+    <div class="action-bar">
+      <button class="btn btn-primary" id="previewBtn">Предпросмотр</button>
+      <button class="btn btn-success" id="printBtn">Печать</button>
+      <button class="btn btn-outline" id="resetBtn">Сбросить</button>
+    </div>
+  </div>
+
+  <!-- ОБЛАСТЬ ДЛЯ ПЕЧАТИ (только данные, без лишних надписей) -->
+  <div class="print-area" id="printArea"></div>
+</div>
+
+<script>
+  (function() {
+    // Элементы формы
+    const medName = document.getElementById('medName');
+    const dosageForm = document.getElementById('dosageForm');
+    const dosage = document.getElementById('dosage');
+    const batchNumber = document.getElementById('batchNumber');
+    const expiryDate = document.getElementById('expiryDate');
+    const manufacturer = document.getElementById('manufacturer');
+    const copiesSelect = document.getElementById('copiesPerSheet');
+    const printArea = document.getElementById('printArea');
+
+    const previewBtn = document.getElementById('previewBtn');
+    const printBtn = document.getElementById('printBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    // Генерация карточек — без "экз.", без даты, без "вкладыш-стеганка"
+    function generateCards(count) {
+      const name = medName.value.trim() || '—';
+      const form = dosageForm.value.trim() || '—';
+      const dose = dosage.value.trim() || '—';
+      const batch = batchNumber.value.trim() || '—';
+      const expiry = expiryDate.value.trim() || '—';
+      const producer = manufacturer.value.trim() || '—';
+
+      if (count < 1) count = 1;
+      if (count > 12) count = 12;
+
+      let html = '';
+      for (let i = 0; i < count; i++) {
+        html += `
+          <div class="card-print" style="display: block;">
+            <div class="header-print">КГ ФКУЗ "МЧС МВД России по г. Москве"</div>
+            <div class="row-print"><span class="label-print">Наименование</span><span class="value-print">${name}</span></div>
+            <div class="row-print"><span class="label-print">Форма выпуска</span><span class="value-print">${form}</span></div>
+            <div class="row-print"><span class="label-print">Дозировка</span><span class="value-print">${dose}</span></div>
+            <div class="row-print"><span class="label-print">Номер серии</span><span class="value-print">${batch}</span></div>
+            <div class="row-print"><span class="label-print">Срок годности</span><span class="value-print">${expiry}</span></div>
+            <div class="row-print"><span class="label-print">Производитель</span><span class="value-print">${producer}</span></div>
+            <!-- footer полностью удалён -->
+          </div>
+        `;
+      }
+      return html;
+    }
+
+    function updatePrintArea() {
+      const copies = parseInt(copiesSelect.value, 10) || 2;
+      const cardsHtml = generateCards(copies);
+      printArea.innerHTML = cardsHtml;
+    }
+
+    // Предпросмотр
+    function previewCards() {
+      updatePrintArea();
+      printArea.style.display = 'block';
+      printArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Печать
+    function printCards() {
+      updatePrintArea();
+      printArea.style.display = 'block';
+      document.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
+      document.querySelector('.container').style.boxShadow = 'none';
+      document.querySelector('.container').style.border = 'none';
+      document.querySelector('.container').style.padding = '4px';
+
+      window.print();
+
+      setTimeout(() => {
+        document.querySelectorAll('.no-print').forEach(el => el.style.display = '');
+        document.querySelector('.container').style.boxShadow = '';
+        document.querySelector('.container').style.border = '';
+        document.querySelector('.container').style.padding = '';
+        printArea.style.display = 'none';
+        printArea.innerHTML = '';
+      }, 400);
+    }
+
+    // Сброс
+    function resetFields() {
+      medName.value = 'Анальгин 500 мг';
+      dosageForm.value = 'Таблетки';
+      dosage.value = '500 мг';
+      batchNumber.value = 'A123-09';
+      expiryDate.value = '12.2027';
+      manufacturer.value = 'Фармстандарт';
+      copiesSelect.value = '2';
+      printArea.style.display = 'none';
+      printArea.innerHTML = '';
+    }
+
+    function init() {
+      medName.value = 'Анальгин 500 мг';
+      dosageForm.value = 'Таблетки';
+      dosage.value = '500 мг';
+      batchNumber.value = 'A123-09';
+      expiryDate.value = '12.2027';
+      manufacturer.value = 'Фармстандарт';
+      copiesSelect.value = '2';
+      printArea.style.display = 'none';
+      printArea.innerHTML = '';
+    }
+
+    // События
+    previewBtn.addEventListener('click', previewCards);
+    printBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      printCards();
+    });
+    resetBtn.addEventListener('click', resetFields);
+
+    copiesSelect.addEventListener('change', function() {
+      if (printArea.style.display === 'block') {
+        updatePrintArea();
+      }
+    });
+
+    const inputFields = [medName, dosageForm, dosage, batchNumber, expiryDate, manufacturer];
+    inputFields.forEach(input => {
+      input.addEventListener('input', function() {
+        if (printArea.style.display === 'block') {
+          updatePrintArea();
+        }
+      });
+    });
+
+    init();
+  })();
+</script>
+
+<!-- Дополнительные стили для карточек на экране -->
+<style>
+  .print-area .card-print {
+    background: white;
+    border: 1.5px solid #1f2a44;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .print-area .card-print .header-print {
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-bottom: 2px solid #1f2a44;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    text-align: center;
+    text-transform: uppercase;
+    color: #0b1e3a;
+  }
+  .print-area .card-print .row-print {
+    display: flex;
+    padding: 5px 0;
+    border-bottom: 1px dashed #d3dbea;
+  }
+  .print-area .card-print .label-print {
+    width: 130px;
+    font-weight: 600;
+    color: #0b1e3a;
+  }
+  .print-area .card-print .value-print {
+    flex: 1;
+    padding-left: 14px;
+  }
+  .print-area .card-print .footer-print {
+    display: none;
+  }
+  @media print {
+    .print-area .card-print {
+      box-shadow: none;
+      border: 1.5px solid #1f2a44;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      max-width: 100%;
+    }
+    .print-area .card-print .header-print {
+      border-bottom-width: 2px;
+    }
+    .print-area .card-print .row-print {
+      border-bottom: 1px dashed #bcc6db;
+    }
+    .print-area .card-print .footer-print {
+      display: none;
+    }
+  }
+</style>
+</body>
+</html>
