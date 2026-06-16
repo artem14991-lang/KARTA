@@ -478,7 +478,7 @@
                 }, 400);
             }
 
-            // === СОХРАНЕНИЕ В WORD (каждая карточка — отдельная таблица) ===
+            // === СОХРАНЕНИЕ В WORD (с рамками) ===
             function saveToWord() {
                 const name = medName.value.trim() || '—';
                 const form = dosageForm.value.trim() || '—';
@@ -524,37 +524,37 @@
                         cardsHtml += `<div style="height:${marginBottom}pt; margin:0; padding:0; border:none; background:white;"></div>`;
                     }
 
-                    // Каждая карточка — отдельная таблица с явной рамкой
+                    // Карточка — отдельная таблица с явной рамкой со всех сторон
                     cardsHtml += `
                         <table border="1" cellpadding="${padding}" cellspacing="0" style="border-collapse:collapse; border:1.5pt solid #1f2a44; margin:0 auto 0 auto; width:${cardWidth}pt; font-family:'Segoe UI',Arial,sans-serif; font-size:${fontSize}pt; background:white;">
                             <tr>
-                                <td colspan="2" style="border-bottom:2pt solid #1f2a44; text-align:center; font-weight:700; font-size:${headerSize}pt; text-transform:uppercase; padding:4pt ${padding}pt 6pt ${padding}pt; color:#0b1e3a; background:white; border-left:none; border-right:none; border-top:none;">
+                                <td colspan="2" style="border:1.5pt solid #1f2a44; border-bottom:2pt solid #1f2a44; text-align:center; font-weight:700; font-size:${headerSize}pt; text-transform:uppercase; padding:4pt ${padding}pt 6pt ${padding}pt; color:#0b1e3a; background:white;">
                                     КГ ФКУЗ "МЧС МВД России по г. Москве"
                                 </td>
                             </tr>
                             <tr>
-                                <td style="border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">Наименование</td>
-                                <td style="border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">${name}</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white;">Наименование</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white;">${name}</td>
                             </tr>
                             <tr>
-                                <td style="border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">Форма выпуска</td>
-                                <td style="border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">${form}</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white;">Форма выпуска</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white;">${form}</td>
                             </tr>
                             <tr>
-                                <td style="border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">Дозировка</td>
-                                <td style="border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">${dose}</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white;">Дозировка</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white;">${dose}</td>
                             </tr>
                             <tr>
-                                <td style="border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">Номер серии</td>
-                                <td style="border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">${batch}</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white;">Номер серии</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white;">${batch}</td>
                             </tr>
                             <tr>
-                                <td style="border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">Срок годности</td>
-                                <td style="border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">${expiry}</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white;">Срок годности</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white;">${expiry}</td>
                             </tr>
                             <tr>
-                                <td style="border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">Производитель</td>
-                                <td style="border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white; border-left:none; border-right:none; border-top:none;">${producer}</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; font-weight:600; color:#0b1e3a; width:${labelWidth}pt; padding:${rowPadding}pt ${padding}pt; background:white;">Производитель</td>
+                                <td style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; padding:${rowPadding}pt ${padding}pt; background:white;">${producer}</td>
                             </tr>
                         </table>
                     `;
@@ -764,5 +764,5 @@
             }
         }
     </style>
-</body>
+  </body>
 </html>
