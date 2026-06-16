@@ -30,7 +30,7 @@
         .doc-header {
             border-bottom: 2px solid #1f2a44;
             padding-bottom: 14px;
-            margin-bottom: 28px;
+            margin-bottom: 22px;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
@@ -52,6 +52,18 @@
             padding: 4px 18px;
             border-radius: 30px;
             border: 1px solid #ccd6e6;
+        }
+        .department-static {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #0b1e3a;
+            padding: 6px 0 14px 0;
+            border-bottom: 1px dashed #d0d8e6;
+            margin-bottom: 22px;
+            letter-spacing: 0.3px;
+        }
+        .department-static span {
+            text-transform: uppercase;
         }
         .form-grid {
             display: grid;
@@ -211,6 +223,10 @@
             padding-bottom: 5px;
             margin-bottom: 8px;
         }
+        .card-print.size-small .department-print {
+            font-size: 0.65rem;
+            padding: 2px 0 6px 0;
+        }
         .card-print.size-small .row-print {
             padding: 3px 0;
         }
@@ -246,6 +262,10 @@
             padding-bottom: 12px;
             margin-bottom: 16px;
         }
+        .card-print.size-large .department-print {
+            font-size: 1rem;
+            padding: 6px 0 10px 0;
+        }
         .card-print.size-large .row-print {
             padding: 7px 0;
         }
@@ -256,6 +276,16 @@
             text-align: center;
             text-transform: uppercase;
             color: #0b1e3a;
+        }
+        .card-print .department-print {
+            font-weight: 600;
+            text-align: center;
+            padding: 4px 0 8px 0;
+            border-bottom: 1px dashed #d3dbea;
+            margin-bottom: 6px;
+            color: #0b1e3a;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
         .card-print .row-print {
             display: flex;
@@ -306,6 +336,9 @@
             .card-print .header-print {
                 border-bottom-width: 2px;
             }
+            .card-print .department-print {
+                border-bottom: 1px dashed #bcc6db;
+            }
             .card-print .row-print {
                 border-bottom: 1px dashed #bcc6db;
             }
@@ -333,6 +366,10 @@
         <div class="doc-header">
             <span class="title">Печатная форма</span>
             <span class="sub">КГ ФКУЗ "МЧС МВД России по г. Москве"</span>
+        </div>
+
+        <div class="department-static no-print">
+            <span>Отделение приемное</span>
         </div>
 
         <div class="no-print">
@@ -429,6 +466,7 @@
                     html += `
                         <div class="card-print ${sizeClass}" style="display: block; margin-bottom: 18px;">
                             <div class="header-print">КГ ФКУЗ "МЧС МВД России по г. Москве"</div>
+                            <div class="department-print">Отделение приемное</div>
                             <div class="row-print"><span class="label-print">Наименование</span><span class="value-print">${name}</span></div>
                             <div class="row-print"><span class="label-print">Форма выпуска</span><span class="value-print">${form}</span></div>
                             <div class="row-print"><span class="label-print">Дозировка</span><span class="value-print">${dose}</span></div>
@@ -478,7 +516,7 @@
                 }, 400);
             }
 
-            // === СОХРАНЕНИЕ В WORD (с рамками) ===
+            // === СОХРАНЕНИЕ В WORD (с полным разделением через таблицы-разделители) ===
             function saveToWord() {
                 const name = medName.value.trim() || '—';
                 const form = dosageForm.value.trim() || '—';
@@ -489,47 +527,55 @@
                 const copies = parseInt(copiesSelect.value, 10) || 2;
                 const size = cardSizeSelect.value || 'medium';
 
-                // Параметры для Word
-                let cardWidth, labelWidth, fontSize, headerSize, padding, marginBottom, rowPadding;
+                let cardWidth, labelWidth, fontSize, headerSize, padding, rowPadding, spacerHeight;
                 if (size === 'small') {
                     cardWidth = '280';
                     labelWidth = '85';
                     fontSize = '8.5';
                     headerSize = '8.5';
                     padding = '6';
-                    marginBottom = '14';
                     rowPadding = '3';
+                    spacerHeight = '16';
                 } else if (size === 'large') {
                     cardWidth = '580';
                     labelWidth = '170';
                     fontSize = '13';
                     headerSize = '13';
                     padding = '18';
-                    marginBottom = '22';
                     rowPadding = '7';
+                    spacerHeight = '24';
                 } else {
                     cardWidth = '420';
                     labelWidth = '130';
                     fontSize = '11';
                     headerSize = '11';
                     padding = '12';
-                    marginBottom = '18';
                     rowPadding = '5';
+                    spacerHeight = '20';
                 }
 
                 let cardsHtml = '';
                 for (let i = 0; i < copies; i++) {
-                    // Разделитель между карточками
+                    // Разделитель между карточками — таблица-разделитель с пустой строкой
                     if (i > 0) {
-                        cardsHtml += `<div style="height:${marginBottom}pt; margin:0; padding:0; border:none; background:white;"></div>`;
+                        cardsHtml += `
+                            <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse; margin:0 auto; width:${cardWidth}pt; border:none; background:white;">
+                                <tr><td style="height:${spacerHeight}pt; border:none; background:white; font-size:1pt; line-height:1pt;">&nbsp;</td></tr>
+                            </table>
+                        `;
                     }
 
-                    // Карточка — отдельная таблица с явной рамкой со всех сторон
+                    // Основная карточка — таблица с данными
                     cardsHtml += `
                         <table border="1" cellpadding="${padding}" cellspacing="0" style="border-collapse:collapse; border:1.5pt solid #1f2a44; margin:0 auto 0 auto; width:${cardWidth}pt; font-family:'Segoe UI',Arial,sans-serif; font-size:${fontSize}pt; background:white;">
                             <tr>
                                 <td colspan="2" style="border:1.5pt solid #1f2a44; border-bottom:2pt solid #1f2a44; text-align:center; font-weight:700; font-size:${headerSize}pt; text-transform:uppercase; padding:4pt ${padding}pt 6pt ${padding}pt; color:#0b1e3a; background:white;">
                                     КГ ФКУЗ "МЧС МВД России по г. Москве"
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="border:1.5pt solid #1f2a44; border-bottom:1pt dashed #bcc6db; text-align:center; font-weight:600; font-size:${fontSize}pt; padding:4pt ${padding}pt; color:#0b1e3a; background:white; text-transform:uppercase; letter-spacing:0.3pt;">
+                                    Отделение приемное
                                 </td>
                             </tr>
                             <tr>
@@ -666,6 +712,16 @@
             text-transform: uppercase;
             color: #0b1e3a;
         }
+        .print-area .card-print .department-print {
+            font-weight: 600;
+            text-align: center;
+            padding: 4px 0 8px 0;
+            border-bottom: 1px dashed #d3dbea;
+            margin-bottom: 6px;
+            color: #0b1e3a;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
         .print-area .card-print .row-print {
             display: flex;
             border-bottom: 1px dashed #d3dbea;
@@ -698,6 +754,10 @@
             font-size: 0.7rem;
             padding-bottom: 5px;
             margin-bottom: 8px;
+        }
+        .print-area .card-print.size-small .department-print {
+            font-size: 0.65rem;
+            padding: 2px 0 6px 0;
         }
         .print-area .card-print.size-small .row-print {
             padding: 3px 0;
@@ -734,6 +794,10 @@
             padding-bottom: 12px;
             margin-bottom: 16px;
         }
+        .print-area .card-print.size-large .department-print {
+            font-size: 1rem;
+            padding: 6px 0 10px 0;
+        }
         .print-area .card-print.size-large .row-print {
             padding: 7px 0;
         }
@@ -746,6 +810,9 @@
             }
             .print-area .card-print .header-print {
                 border-bottom-width: 2px;
+            }
+            .print-area .card-print .department-print {
+                border-bottom: 1px dashed #bcc6db;
             }
             .print-area .card-print .row-print {
                 border-bottom: 1px dashed #bcc6db;
@@ -764,5 +831,5 @@
             }
         }
     </style>
-  </body>
+</body>
 </html>
